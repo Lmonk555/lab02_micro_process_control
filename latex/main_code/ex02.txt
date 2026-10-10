@@ -1,0 +1,107 @@
+#
+#
+#
+#########################################################################################
+
+etc.
+
+##########################################################################################
+#
+#
+#
+
+
+
+
+
+
+
+void display7SEG(int num)
+{
+    if (num < 0 || num > 9) return;
+
+	HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, GPIO_PIN_SET);
+
+    for (int i = 0; i < 7; i++)
+        HAL_GPIO_WritePin(segments[i].port, segments[i].pin, digitPatterns[num][i]);
+}
+
+
+
+//###################################################################################################################
+//###################################################################################################################
+//###################################################################################################################
+// From exercise 3.2
+
+int digit_counter = 50;
+int dot_counter   = 100;
+int state = 0;
+int digits[4] = {1, 2, 3, 0};
+
+/* USER CODE END 0 */
+
+
+
+
+
+
+#
+#
+#
+#########################################################################################
+
+etc.
+
+##########################################################################################
+#
+#
+#
+
+
+
+
+
+
+
+/* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    dot_counter--;
+    if (dot_counter <= 0)
+    {
+        dot_counter = 100;
+        HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+    }
+
+
+    digit_counter--;
+    if (digit_counter <= 0)
+    {
+        digit_counter = 50;
+        HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+
+
+        display7SEG(digits[state]);
+
+
+        switch (state)
+        {
+            case 0: HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_RESET); break;
+            case 1: HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_RESET); break;
+            case 2: HAL_GPIO_WritePin(EN2_GPIO_Port, EN2_Pin, GPIO_PIN_RESET); break;
+            case 3: HAL_GPIO_WritePin(EN3_GPIO_Port, EN3_Pin, GPIO_PIN_RESET); break;
+        }
+
+        state = (state + 1) % 4;
+
+        // Well, either you can use this or use if + elif + else
+    }
+}
+
+/* USER CODE END 4 */
+
+

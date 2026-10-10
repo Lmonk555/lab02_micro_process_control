@@ -1,0 +1,104 @@
+/* USER CODE BEGIN 0 */
+
+typedef struct
+{
+    GPIO_TypeDef *port;
+    uint16_t pin;
+} SegPin;
+
+
+SegPin segments[] =
+{
+    { SEG0_GPIO_Port, SEG0_Pin },
+    { SEG1_GPIO_Port, SEG1_Pin },
+    { SEG2_GPIO_Port, SEG2_Pin },
+    { SEG3_GPIO_Port, SEG3_Pin },
+    { SEG4_GPIO_Port, SEG4_Pin },
+    { SEG5_GPIO_Port, SEG5_Pin },
+    { SEG6_GPIO_Port, SEG6_Pin },
+};
+
+
+GPIO_PinState digitPatterns[10][7] =
+{
+    { RESET, RESET, RESET, RESET, RESET, RESET, SET   },	// 0
+    { SET,   RESET, RESET, SET,   SET,   SET,   SET   },	// 1
+    { RESET, RESET, SET,   RESET, RESET, SET,   RESET },	// 2
+    { RESET, RESET, RESET, RESET, SET,   SET,   RESET },	// 3
+    { SET,   RESET, RESET, SET,   SET,   RESET, RESET },	// 4
+    { RESET, SET,   RESET, RESET, SET,   RESET, RESET },	// 5
+    { RESET, SET,   RESET, RESET, RESET, RESET, RESET },	// 6
+    { RESET, RESET, RESET, SET,   SET,   SET,   SET   },	// 7
+    { RESET, RESET, RESET, RESET, RESET, RESET, RESET },	// 8
+    { RESET, RESET, RESET, RESET, SET,   RESET, RESET },	// 9
+};
+
+
+void display7SEG(int num)
+{
+    if (num < 0 || num > 9) return;
+
+    HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_SET);
+
+    for (int i = 0; i < 7; i++)
+        HAL_GPIO_WritePin(segments[i].port, segments[i].pin, digitPatterns[num][i]);
+}
+
+
+int counter = 50;
+int state = 0;
+
+
+/* USER CODE END 0 */
+
+
+
+
+
+
+
+#
+#
+#
+#########################################################################################
+
+etc.
+
+##########################################################################################
+#
+#
+#
+
+
+
+
+
+
+/* USER CODE BEGIN 4 */
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	counter--;
+	if(counter <= 0)
+	{
+		counter = 50;
+		HAL_GPIO_TogglePin(LED_GPIO_Port, LED_Pin);
+
+
+        if (state == 0)
+        {
+			display7SEG(1);
+			HAL_GPIO_WritePin(EN0_GPIO_Port, EN0_Pin, GPIO_PIN_RESET);
+			state = 1;
+		}
+        else
+        {
+			display7SEG(2);
+			HAL_GPIO_WritePin(EN1_GPIO_Port, EN1_Pin, GPIO_PIN_RESET);
+			state = 0;
+		}
+	}
+}
+
+/* USER CODE END 4 */
