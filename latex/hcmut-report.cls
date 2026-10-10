@@ -57,6 +57,9 @@
 \newcommand{\@stuname}{STUDENT:\ H (xxxxxxx)}
 \newcommand{\stuname}[1]{\renewcommand{\@stuname}{#1}}
 
+\newcommand{\@class}{Class ID: }
+\newcommand{\class}[1]{\renewcommand{\@class}{#1}}
+
 \newcommand{\@reportplace}{Ho Chi Minh City}
 \newcommand{\reportplace}[1]{\renewcommand{\@reportplace}{#1}}
 
@@ -182,6 +185,7 @@
     \begin{tabular}{rll}
       Advisor(s): \@advisor \\
       Student(s): \@stuname \\
+      Class ID: \@class \\
     \end{tabular}
     \vfill
     \MakeUppercase{\@reportplace, \@reporttime}
